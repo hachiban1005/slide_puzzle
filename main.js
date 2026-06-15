@@ -17,6 +17,11 @@ const shareLink = document.getElementById('shareLink');
 const modeButtons = document.querySelectorAll('.mode-button');
 const SCORE_STORAGE_VERSION = '2';
 const SCORE_STORAGE_VERSION_KEY = 'puzzleScoreStorageVersion';
+const COMPLETION_IMAGES = [
+    './images/furimuki_2.png',
+    './images/furimuki_3.png',
+    './images/furimuki_4.png'
+];
 
 // --- 2. ゲームの状態変数 ---
 let tiles = [];     
@@ -183,6 +188,11 @@ function generateSolvableState() {
     } while (!isSolvable(state) || isCompletedState(state)); 
 
     return state;
+}
+
+function setRandomCompletionImage() {
+    const imagePath = COMPLETION_IMAGES[Math.floor(Math.random() * COMPLETION_IMAGES.length)];
+    puzzleBoard.style.setProperty('--completion-image', `url("${imagePath}")`);
 }
 
 // --- 4. ゲームボードの構築と初期化 ---
@@ -471,7 +481,7 @@ function checkForWin(completionDelay = 0) {
     if (isWin) {
         isGameActive = false;
         stopTimer();
-        messageDisplay.textContent = `クリア！`;
+        // messageDisplay.textContent = `クリア！`;
         
         // ハイスコア更新
         const currentHighScore = loadHighScore();
@@ -491,14 +501,15 @@ function checkForWin(completionDelay = 0) {
         }
 
         if (isNewRecord) {
-            messageDisplay.textContent = `新記録！`;
+            // messageDisplay.textContent = `新記録！`;
         }
 
         window.clearTimeout(completionTimer);
         completionTimer = window.setTimeout(() => {
             // タイルを白に消したあと、完成イラストをゆっくりフェードインする
+            setRandomCompletionImage();
             puzzleBoard.classList.add('completed');
-            showShareLink();
+            // showShareLink();
         }, completionDelay);
     }
 }
@@ -508,7 +519,7 @@ function resetStats() {
     updateMovesDisplay();
     resetElapsedTime();
     hideShareLink();
-    messageDisplay.textContent = 'スタート！';
+    // messageDisplay.textContent = 'スタート！';
 }
 
 function startNewGame() {

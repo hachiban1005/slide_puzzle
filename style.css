@@ -1,12 +1,35 @@
 
 /* --- 1. 全体デザイン & リセット --- */
+:root {
+    --color-page-bg: #a5deff;
+    --color-surface: #ffffff;
+    --color-panel: #f8f8f8;
+    --color-board-bg: #fff;
+    --color-border: #ddd;
+    --color-border-strong: #dddddd;
+    --color-text: #413938;
+    --color-message: #333;
+    --color-muted-text: #7b605c;
+    --color-accent: #6cafd5;
+    --color-accent-contrast: #fff;
+    --color-gold: #ffc400;
+    --color-share-bg: #111;
+    --color-retry-bg: #777;
+    --color-tile-text: white;
+    --color-transparent: transparent;
+    --shadow-container: rgba(0, 0, 0, 0.1);
+    --shadow-tile: rgba(0, 0, 0, 0.2);
+    --shadow-tile-text: rgba(0, 0, 0, 0.75);
+    --overlay-tile: rgba(255, 255, 255, 0.4);
+}
+
 * {
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: var(--color-transparent);
 }
 
 body {
-    font-family: "Zen Maru Gothic", sans-serif;
+    font-family: "Noto Serif JP", "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "MS PMincho", serif;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -14,7 +37,7 @@ body {
     min-height: 100vh;
     min-height: 100dvh;
     margin: 0;
-    background-color: #FFE9EB;
+    background-color: var(--color-page-bg);
     padding: 10px; /* スマホで上下に余裕を持たせる */
 }
 
@@ -23,13 +46,13 @@ body {
     max-width: 450px; /* スマホの縦幅を意識した最大幅 */
     padding: 20px 15px; 
     border-radius: 10px;
-    background-color: #ffffff;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    background-color: var(--color-surface);
+    box-shadow: 0 10px 20px var(--shadow-container);
     text-align: center;
 }
 
 h1 {
-    color: #413938;
+    color: var(--color-text);
     font-size: clamp(1.5em, 5vw, 1.8em); /* フォントもレスポンシブに */
     margin-bottom: 15px;
 }
@@ -52,9 +75,9 @@ h1 {
     gap: 12px;
     margin-bottom: 20px;
     padding: 10px 15px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-border);
     border-radius: 8px;
-    background-color: #f8f8f8;
+    background-color: var(--color-panel);
 }
 
 .score-box {
@@ -63,7 +86,7 @@ h1 {
 
 #movesDisplay, #bestScoreDisplay, #bestTimeDisplay, #timeDisplay {
     font-weight: bold;
-    color: #413938;
+    color: var(--color-text);
     white-space: nowrap; /* 折り返しを防ぐ */
 }
 
@@ -99,13 +122,13 @@ h1 {
 
 #bestScoreDisplay .material-symbols-outlined,
 #bestTimeDisplay .material-symbols-outlined {
-    color: #ffc400;
+    color: var(--color-gold);
 }
 
 #message {
     font-size: 1.1em;
     font-weight: bold;
-    color: #333;
+    color: var(--color-message);
 }
 
 .message-area {
@@ -123,7 +146,7 @@ h1 {
     gap: 5px;
     width: 100%;
     aspect-ratio: 1 / 1;
-    background-color: #fff;
+    background-color: var(--color-board-bg);
     border-radius: 5px;
     padding: 5px;
     touch-action: none; /* 盤面上ではスワイプ操作をパズル移動として扱う */
@@ -136,7 +159,7 @@ h1 {
     content: "";
     position: absolute;
     inset: 0;
-    background-image: url("./images/ooariwebonly.png");
+    background-image: var(--completion-image, url("./images/furimuki_2.png"));
     background-size: cover;
     background-position: center;
     border-radius: inherit;
@@ -170,20 +193,20 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-image: url("./images/ooariwebonly.png");
+    background-image: url("./images/furimuki.gif");
     background-size: var(--image-size) var(--image-size);
     background-position: var(--bg-x) var(--bg-y);
-    font-family: "Changa One", sans-serif;
-    color: white;
+    font-family: inherit;
+    color: var(--color-tile-text);
     font-size: clamp(2.25em, 9vw, 3em); /* タイル内のフォントもレスポンシブに */
     font-weight: bold;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.75);
+    text-shadow: 0 2px 6px var(--shadow-tile-text);
     border-radius: 5px;
     cursor: pointer;
     box-shadow:
         /* プレイ中は画像に薄い白を重ねる */
-        inset 0 0 0 9999px rgba(255, 255, 255, 0.4),
-        0 3px 6px rgba(0, 0, 0, 0.2);
+        inset 0 0 0 9999px var(--overlay-tile),
+        0 3px 6px var(--shadow-tile);
     transition:
         transform 0.1s cubic-bezier(0.2, 0.8, 0.2, 1),
         background-color 0.4s,
@@ -195,23 +218,23 @@ h1 {
 }
 
 .tile.empty {
-    background-color: #fff !important; 
+    background-color: var(--color-board-bg) !important; 
     background-image: none;
     box-shadow: none;
     cursor: default;
-    color: transparent; 
+    color: var(--color-transparent); 
     z-index: 0;
 }
 
 .tile.correct {
     /* 正解位置に来たタイルは数字とグレーを消して、画像だけ見せる */
-    color: transparent;
+    color: var(--color-transparent);
     text-shadow: none;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 3px 6px var(--shadow-tile);
 }
 
 #puzzleBoard.hide-numbers .tile {
-    color: transparent;
+    color: var(--color-transparent);
     text-shadow: none;
 }
 
@@ -252,7 +275,7 @@ h1 {
     grid-template-columns: repeat(3, 1fr);
     margin-top: 14px;
     margin-bottom: 16px;
-    border: 2px solid #ea6474;
+    border: 2px solid var(--color-accent);
     border-radius: 18px;
     overflow: hidden;
 }
@@ -260,10 +283,10 @@ h1 {
 .mode-button {
     padding: 8px 10px;
     border: none;
-    border-right: 2px solid #ea6474;
+    border-right: 2px solid var(--color-accent);
     border-radius: 0;
-    background-color: #fff;
-    color: #ea6474;
+    background-color: var(--color-surface);
+    color: var(--color-accent);
     font-family: inherit;
     font-size: 0.95em;
     font-weight: 700;
@@ -277,8 +300,8 @@ h1 {
 }
 
 .mode-button.active {
-    background-color: #ea6474;
-    color: #fff;
+    background-color: var(--color-accent);
+    color: var(--color-accent-contrast);
 }
 
 .button-area {
@@ -303,8 +326,8 @@ h1 {
     font-size: 1.1em;
     font-weight: 700;
     cursor: pointer;
-    background-color: #ea6474;
-    color: white;
+    background-color: var(--color-accent);
+    color: var(--color-accent-contrast);
     border: none;
     border-radius: 25px;
     -webkit-appearance: none;
@@ -312,13 +335,13 @@ h1 {
 }
 
 #retryButton {
-    background-color: #777;
+    background-color: var(--color-retry-bg);
 }
 
 #retryButton {
-    border: 2px solid #ea6474;
-    background-color: #fff;
-    color: #ea6474;
+    border: 2px solid var(--color-accent);
+    background-color: var(--color-surface);
+    color: var(--color-accent);
 }
 
 .share-box {
@@ -338,8 +361,8 @@ h1 {
     justify-content: center;
     padding: 7px 12px;
     border-radius: 25px;
-    background-color: #111;
-    color: #fff;
+    background-color: var(--color-share-bg);
+    color: var(--color-accent-contrast);
     font-size: 0.9em;
     font-weight: 700;
     text-decoration: none;
@@ -380,7 +403,7 @@ h1 {
 /* https://pote-chil.com/css-stock/ja/toggle-button#2 */
 
 .toggle-label {
-    color: #7b605c;
+    color: var(--color-muted-text);
     font-weight: 700;
     line-height: 1;
 }
@@ -391,14 +414,14 @@ h1 {
     width: 58px;
     height: 30px;
     border-radius: 30px;
-    border: 2px solid #dddddd;
+    border: 2px solid var(--color-border-strong);
     box-sizing: content-box;
     cursor: pointer;
     transition: border-color .4s;
 }
 
 .toggle-button-2:has(:checked) {
-    border-color: #ea6474;
+    border-color: var(--color-accent);
 }
 
 .toggle-button-2::after {
@@ -409,14 +432,14 @@ h1 {
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background-color: #dddddd;
+    background-color: var(--color-border-strong);
     content: '';
     transition: left .4s;
 }
 
 .toggle-button-2:has(:checked)::after {
     left: 31px;
-    background-color: #ea6474;
+    background-color: var(--color-accent);
 }
 
 .toggle-button-2 input {
